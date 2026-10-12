@@ -1,111 +1,75 @@
-
 import { useState } from 'react';
-import { ServiceProvider } from './ui/contexts/ServiceContext';
-import { Dashboard } from './ui/screens/Dashboard';
-import { HouseholdScreen } from './ui/screens/HouseholdScreen';
-import { ExportScreen } from './ui/screens/ExportScreen';
-import { DeclarationScreen } from './ui/screens/DeclarationScreen';
+import { DataProvider, useData } from './ui/contexts/DataContext';
+import { I18nProvider, useI18n } from './i18n/I18nContext';
+import type { TranslationKey } from './i18n/translations';
+import { DashboardScreen } from './ui/screens/DashboardScreen';
+import { IngredientsScreen } from './ui/screens/IngredientsScreen';
+import { ProductsScreen } from './ui/screens/ProductsScreen';
+import { MenusScreen } from './ui/screens/MenusScreen';
+import { PnlScreen } from './ui/screens/PnlScreen';
+import { AnalysisScreen } from './ui/screens/AnalysisScreen';
 import './index.css';
 
-function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'household' | 'declaration' | 'export'>('dashboard');
+type Tab = 'dashboard' | 'ingredients' | 'products' | 'menus' | 'pnl' | 'analysis';
+const TABS: { id: Tab; label: TranslationKey }[] = [
+  { id: 'dashboard', label: 'navDashboard' },
+  { id: 'ingredients', label: 'navIngredients' },
+  { id: 'products', label: 'navProducts' },
+  { id: 'menus', label: 'navMenus' },
+  { id: 'pnl', label: 'navPnl' },
+  { id: 'analysis', label: 'navAnalysis' },
+];
+
+function Shell() {
+  const { t, lang, setLang } = useI18n();
+  const { data } = useData();
+  const [tab, setTab] = useState<Tab>('dashboard');
+  const [periodId, setPeriodId] = useState<string | null>(null);
+  // Default to the most recent month when none is selected (or the selected one was deleted).
+  const latest = [...data.periods].sort((a, b) => b.month.localeCompare(a.month))[0];
+  const activePeriod = data.periods.some(p => p.id === periodId) ? periodId : latest?.id ?? null;
 
   return (
-    <ServiceProvider>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
-        {/* Navigation Bar */}
-        <nav className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex">
-                <div className="flex-shrink-0 flex items-center">
-                  <span className="font-bold text-xl text-blue-600">French Tax Prep</span>
-                </div>
-                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                  <button
-                    onClick={() => setActiveTab('dashboard')}
-                    className={`${
-                      activeTab === 'dashboard'
-                        ? 'border-blue-500 text-gray-900'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                    } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full`}
-                  >
-                    Dépenses
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('household')}
-                    className={`${
-                      activeTab === 'household'
-                        ? 'border-blue-500 text-gray-900'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                    } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full`}
-                  >
-                    Foyer
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('declaration')}
-                    className={`${
-                      activeTab === 'declaration'
-                        ? 'border-blue-500 text-gray-900'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                    } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full`}
-                  >
-                    Déclaration
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('export')}
-                    className={`${
-                      activeTab === 'export'
-                        ? 'border-blue-500 text-gray-900'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                    } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full`}
-                  >
-                    Export & Clôture
-                  </button>
-                </div>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <nav className="bg-white shadow-sm sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
+          <span className="font-bold text-lg text-orange-600">🍔 {t('appName')}</span>
+          <div className="flex rounded-md border overflow-hidden text-sm">
+            {(['fr', 'tr'] as const).map(l => (
+              <button key={l} onClick={() => setLang(l)} className={`px-3 py-1 ${lang === l ? 'bg-orange-600 text-white' : 'bg-white text-gray-600'}`}>
+                {l.toUpperCase()}
+              </button>
+            ))}
           </div>
-          
-          {/* Mobile menu (simplified) */}
-          <div className="sm:hidden flex justify-around border-t py-2 overflow-x-auto">
-              <button 
-                onClick={() => setActiveTab('dashboard')}
-                className={`p-2 flex-shrink-0 ${activeTab === 'dashboard' ? 'text-blue-600 font-bold' : 'text-gray-500'}`}
-              >
-                Dépenses
-              </button>
-              <button 
-                onClick={() => setActiveTab('household')}
-                className={`p-2 flex-shrink-0 ${activeTab === 'household' ? 'text-blue-600 font-bold' : 'text-gray-500'}`}
-              >
-                Foyer
-              </button>
-              <button 
-                onClick={() => setActiveTab('declaration')}
-                className={`p-2 flex-shrink-0 ${activeTab === 'declaration' ? 'text-blue-600 font-bold' : 'text-gray-500'}`}
-              >
-                Déclaration
-              </button>
-              <button 
-                onClick={() => setActiveTab('export')}
-                className={`p-2 flex-shrink-0 ${activeTab === 'export' ? 'text-blue-600 font-bold' : 'text-gray-500'}`}
-              >
-                Export
-              </button>
-          </div>
-        </nav>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
+          {TABS.map(x => (
+            <button key={x.id} onClick={() => setTab(x.id)}
+              className={`px-3 py-2 text-sm whitespace-nowrap border-b-2 ${tab === x.id ? 'border-orange-600 text-gray-900 font-medium' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
+              {t(x.label)}
+            </button>
+          ))}
+        </div>
+      </nav>
 
-        {/* Main Content */}
-        <main className="flex-1">
-          {activeTab === 'dashboard' && <Dashboard />}
-          {activeTab === 'household' && <HouseholdScreen />}
-          {activeTab === 'declaration' && <DeclarationScreen />}
-          {activeTab === 'export' && <ExportScreen />}
-        </main>
-      </div>
-    </ServiceProvider>
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6 animate-fade-in" key={tab}>
+        {tab === 'dashboard' && <DashboardScreen />}
+        {tab === 'ingredients' && <IngredientsScreen />}
+        {tab === 'products' && <ProductsScreen />}
+        {tab === 'menus' && <MenusScreen />}
+        {tab === 'pnl' && <PnlScreen periodId={activePeriod} onSelect={setPeriodId} />}
+        {tab === 'analysis' && <AnalysisScreen periodId={activePeriod} onSelect={setPeriodId} />}
+      </main>
+    </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <I18nProvider>
+      <DataProvider>
+        <Shell />
+      </DataProvider>
+    </I18nProvider>
+  );
+}

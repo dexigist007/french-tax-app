@@ -1,7 +1,7 @@
 {
-  "name": "french-tax-app",
+  "name": "fastfood-cost-app",
   "version": "1.0.0",
-  "description": "Une application locale et sécurisée pour préparer votre déclaration de revenus en France (simulateur de frais réels, quotient familial, etc.).",
+  "description": "Outil local et chiffré de calcul des coûts, de prix de vente et de rentabilité pour la restauration rapide en France.",
   "main": "electron/main.js",
   "type": "module",
   "author": "Open Source Contributor",
@@ -11,14 +11,14 @@
     "url": "https://github.com/yourusername/french-tax-app"
   },
   "keywords": [
-    "impots",
-    "france",
-    "tax",
-    "declaration",
-    "frais reels",
-    "quotient familial",
-    "local-first",
-    "privacy"
+    "fast-food",
+    "restauration rapide",
+    "food cost",
+    "fiche technique",
+    "marge",
+    "compte de résultat",
+    "ingénierie de menu",
+    "local-first"
   ],
   "scripts": {
     "dev": "vite",
@@ -30,8 +30,8 @@
     "electron:build": "npm run build && electron-builder"
   },
   "build": {
-    "appId": "com.frenchtax.app",
-    "productName": "French Tax Prep",
+    "appId": "com.fastfoodcost.app",
+    "productName": "Fast-Food Coût & Marge",
     "directories": {
       "output": "release"
     },

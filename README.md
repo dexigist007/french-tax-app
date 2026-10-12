@@ -1,86 +1,36 @@
+# Fast-Food Coût & Marge
 
-# French Tax Prep (Préparation Fiscale)
-
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-
-Une application **locale, sécurisée et open-source** pour aider les résidents fiscaux français à préparer leur déclaration de revenus. 
-
-Cette application vous permet de suivre vos revenus et dépenses tout au long de l'année, de calculer votre quotient familial en temps réel et d'estimer l'impact de vos frais réels.
-
-**⚠️ Important :** Cette application est un outil d'aide à la décision. Elle ne remplace pas la déclaration officielle sur [impots.gouv.fr](https://www.impots.gouv.fr). Aucune donnée n'est transmise à l'administration fiscale.
+Application **locale, chiffrée et open-source** pour aider les restaurants rapides en France à maîtriser leurs coûts, fixer leurs prix et suivre leur rentabilité. Interface en **français** et **turc** (FR / TR).
 
 ## ✨ Fonctionnalités
 
-*   **Gestion des Revenus & Dépenses** : Saisie facile des salaires, pensions, dons, frais de garde, etc.
-*   **Calcul du Quotient Familial** : Estimation automatique du nombre de parts fiscales en fonction de la composition de votre foyer (marié, pacsé, enfants, garde alternée, invalidité...).
-*   **Simulateur Frais Réels vs Forfait** : Comparez l'intérêt de déclarer vos frais réels (kilométriques, repas) par rapport à l'abattement forfaitaire de 10%.
-*   **Confidentialité Totale (Local-First)** : Toutes les données sont stockées **uniquement sur votre appareil** (IndexedDB chiffré). Rien n'est envoyé dans le cloud.
-*   **Export PDF & CSV** : Générez un récapitulatif clair pour vous aider lors de la déclaration officielle.
-*   **Checklist Déclaration** : Un guide étape par étape pour ne rien oublier le jour J.
+* **Ingrédients & emballages** — prix d’achat HT par colis, contenance, taux de perte → coût réel par kg / litre / pièce.
+* **Fiches techniques** — composition de chaque produit (emballage compris) → coût matière, marge HT, food cost %, coefficient multiplicateur.
+* **Prix conseillé TTC** — calculé à partir d’un objectif de food cost et du taux de TVA (10 % sur place / à emporter immédiat, 5,5 %, 20 %), arrondi aux 10 centimes.
+* **Menus & formules** — coût, marge et remise client par rapport aux prix à la carte.
+* **Compte de résultat mensuel** — ventes, TVA collectée, coût matière, commissions des plateformes de livraison, charges fixes, résultat et **seuil de rentabilité**. Export CSV.
+* **Ingénierie de menu** — matrice Kasavana & Smith (Star / Cheval de labour / Énigme / Poids mort) avec recommandations.
+* **Tableau de bord** — alertes sur les produits vendus à perte ou au-dessus de leur objectif.
+* **Confidentialité** — données stockées uniquement sur l’appareil (IndexedDB chiffré AES-GCM).
 
-## 🚀 Installation
+Des données d’exemple sont chargées au premier lancement.
 
-### Windows
-Téléchargez la dernière version (`.exe`) depuis la section [Releases](https://github.com/yourusername/french-tax-app/releases).
+> Outil d’aide à la décision : il ne remplace pas votre expert-comptable.
 
-### MacOS / Linux
-Pour l'instant, vous pouvez lancer l'application en mode développement ou la compiler vous-même (voir ci-dessous).
+## 🛠️ Développement
 
-## 🛠️ Développement (Contribuer)
+Prérequis : Node.js 18+.
 
-Nous accueillons avec plaisir les contributions ! Voici comment lancer le projet localement.
-
-### Prérequis
-*   Node.js (v18 ou supérieur)
-*   npm
-
-### Démarrage Rapide
-
-1.  Clonez le dépôt :
-    ```bash
-    git clone https://github.com/yourusername/french-tax-app.git
-    cd french-tax-app
-    ```
-
-2.  Installez les dépendances :
-    ```bash
-    npm install
-    ```
-
-3.  Lancez l'application en mode web (pour le développement UI rapide) :
-    ```bash
-    npm run dev
-    ```
-
-4.  Lancez l'application en mode Electron (Desktop) :
-    ```bash
-    npm run electron:dev
-    ```
-
-### Tests
-Nous utilisons Vitest pour les tests unitaires.
 ```bash
-npm run test
+cd french-tax-app
+npm install
+npm run dev     # application web
+npm test        # tests unitaires (calculs de coûts, stockage)
+npm run electron:dev   # version bureau
 ```
 
-## 🏗️ Architecture
+Les calculs se trouvent dans `src/features/costing/costing.ts` (fonctions pures, testées).
 
-*   **Frontend** : React 19, TypeScript, TailwindCSS
-*   **Build Tool** : Vite
-*   **Desktop Wrapper** : Electron
-*   **Stockage** : IndexedDB (via `idb`) avec chiffrement AES-GCM.
-*   **Logique Métier** : Services isolés (`TaxService`, `HouseholdService`) pour garantir la précision des calculs fiscaux français.
+## Licence
 
-## 🔒 Sécurité
-
-La confidentialité est au cœur de ce projet.
-*   Les données sensibles (noms, montants) sont chiffrées avant d'être écrites dans la base de données locale du navigateur/application.
-*   La clé de chiffrement est dérivée d'un sel unique généré à la première utilisation.
-
-## 📄 Licence
-
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
----
-*Fait avec ❤️ pour simplifier la fiscalité française.*
+MIT
